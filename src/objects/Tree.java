@@ -10,11 +10,13 @@ public class Tree {
         this.n = n;
     }
 
-    public void createTree(String initialPosition) {
+    public void generalSearch(String initialPosition) {
         Node root = createRoot(initialPosition);
         setRoot(root);
-        buildTree(root);
-        System.out.println("Tree created.");
+        setKnightPosition(root);
+        if (!solutionFound) {
+            System.out.println("No solution found.");
+        }
     }
 
     private Node createRoot(String initialPosition) {
@@ -23,44 +25,43 @@ public class Tree {
         return new Node(null, locationX, locationY, 1);
     }
 
-    private void buildTree(Node node) {
-        possibleMoves(node);
-        if (!solutionFound) {
-            for (Node child : node.children) {
-                buildTree(child);
-            }
-        }
-    }
-
-    private void possibleMoves(Node node) {
+    private void setKnightPosition(Node node) {
+        if (solutionFound) return;
         if (node.depth == n * n) {
             solution = node;
             printSolutionPath(node);
             solutionFound = true;
-            return; // Stop further exploration if max depth is reached
+            return;
         }
+        possibleMoves(node);
+        for (Node child : node.children) {
+            setKnightPosition(child);
+        }
+    }
 
+    private void possibleMoves(Node node) {
         char locationX = node.locationX;
         int locationY = node.locationY;
-        move(locationX, locationY, -2, 1, node); // TWO LEFT, ONE UP
+
+        move(locationX, locationY, -2, 1, node);  // TWO LEFT, ONE UP
         move(locationX, locationY, -2, -1, node); // TWO LEFT, ONE DOWN
-        move(locationX, locationY, -1, 2, node); // ONE LEFT, TWO UP
-        move(locationX, locationY, 1, 2, node); // ONE RIGHT, TWO UP
-        move(locationX, locationY, 2, 1, node); // TWO RIGHT, ONE UP
-        move(locationX, locationY, 2, -1, node); // TWO RIGHT, ONE DOWN
-        move(locationX, locationY, 1, -2, node); // ONE RIGHT, TWO DOWN
+        move(locationX, locationY, -1, 2, node);  // ONE LEFT, TWO UP
+        move(locationX, locationY, 1, 2, node);   // ONE RIGHT, TWO UP
+        move(locationX, locationY, 2, 1, node);   // TWO RIGHT, ONE UP
+        move(locationX, locationY, 2, -1, node);  // TWO RIGHT, ONE DOWN
+        move(locationX, locationY, 1, -2, node);  // ONE RIGHT, TWO DOWN
         move(locationX, locationY, -1, -2, node); // ONE LEFT, TWO DOWN
     }
 
     private void move(char locationX, int locationY, int moveX, int moveY, Node node) {
         char newX = (char) (locationX + moveX);
         int newY = locationY + moveY;
+
         if (checkBorders(newX, newY) && checkVisited(node, newX, newY)) {
-            Node child = new Node(node, newX, newY, node.depth + 1); // Increment depth
+            Node child = new Node(node, newX, newY, node.depth + 1);
             node.addChild(child);
         }
     }
-
 
     private boolean checkVisited(Node node, char newX, int newY) {
         Node currentNode = node.parent;
@@ -83,6 +84,7 @@ public class Tree {
 
     private void printSolutionPath(Node node) {
         Node currentNode = node;
+        System.out.println("Solution Path:");
         while (currentNode != null) {
             System.out.println(currentNode.locationX + "" + currentNode.locationY);
             currentNode = currentNode.parent;

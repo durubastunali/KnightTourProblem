@@ -16,7 +16,7 @@ public class Main {
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
                 initialPosition = (char)(96 + i) + "" + j;
-                tree.createTree(initialPosition);
+                tree.generalSearch(initialPosition);
                 System.out.println(initialPosition);
             }
         }
