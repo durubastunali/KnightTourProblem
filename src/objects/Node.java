@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-    int locationY;
-    char locationX;
-    Node parent;
-    List<Node> children;
-    int depth;
+    public int locationY;
+    public char locationX;
+    public Node parent;
+    public List<Node> children;
+    public int depth;
 
     public Node(Node parent, char locationX, int locationY, int depth) {
         this.parent = parent;

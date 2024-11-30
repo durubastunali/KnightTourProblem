@@ -4,42 +4,20 @@ public class Tree {
     public Node root;
     public Node solution;
     public int n;
-    private boolean solutionFound = false;
 
     public Tree(int n) {
         this.n = n;
     }
 
-    public void generalSearch(String initialPosition) {
-        Node root = createRoot(initialPosition);
-        setRoot(root);
-        setKnightPosition(root);
-        if (!solutionFound) {
-            System.out.println("No solution found.");
-        }
-    }
-
-    private Node createRoot(String initialPosition) {
+    public Node createRoot(String initialPosition) {
         char locationX = initialPosition.charAt(0);
         int locationY = Integer.parseInt(initialPosition.substring(1));
-        return new Node(null, locationX, locationY, 1);
+        Node rootNode = new Node(null, locationX, locationY, 1);
+        setRoot(rootNode);
+        return rootNode;
     }
 
-    private void setKnightPosition(Node node) {
-        if (solutionFound) return;
-        if (node.depth == n * n) {
-            solution = node;
-            printSolutionPath(node);
-            solutionFound = true;
-            return;
-        }
-        possibleMoves(node);
-        for (Node child : node.children) {
-            setKnightPosition(child);
-        }
-    }
-
-    private void possibleMoves(Node node) {
+    public void possibleMoves(Node node) {
         char locationX = node.locationX;
         int locationY = node.locationY;
 
@@ -53,17 +31,16 @@ public class Tree {
         move(locationX, locationY, -1, -2, node); // ONE LEFT, TWO DOWN
     }
 
-    private void move(char locationX, int locationY, int moveX, int moveY, Node node) {
+    public void move(char locationX, int locationY, int moveX, int moveY, Node node) {
         char newX = (char) (locationX + moveX);
         int newY = locationY + moveY;
-
         if (checkBorders(newX, newY) && checkVisited(node, newX, newY)) {
             Node child = new Node(node, newX, newY, node.depth + 1);
             node.addChild(child);
         }
     }
 
-    private boolean checkVisited(Node node, char newX, int newY) {
+    public boolean checkVisited(Node node, char newX, int newY) {
         Node currentNode = node.parent;
         while (currentNode != null) {
             if ((currentNode.locationX + "" + currentNode.locationY).equals(newX + "" + newY)) {
@@ -74,7 +51,7 @@ public class Tree {
         return true;
     }
 
-    private boolean checkBorders(char x, int y) {
+    public boolean checkBorders(char x, int y) {
         return x >= 97 && x <= 96 + n && y >= 1 && y <= n;
     }
 
@@ -82,7 +59,7 @@ public class Tree {
         this.root = root;
     }
 
-    private void printSolutionPath(Node node) {
+    public void printSolutionPath(Node node) {
         Node currentNode = node;
         System.out.println("Solution Path:");
         while (currentNode != null) {
