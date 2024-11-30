@@ -45,11 +45,21 @@ public class Tree {
     private void move(char locationX, int locationY, int moveX, int moveY, Node node) {
         char newX = (char) (locationX + moveX);
         int newY = locationY + moveY;
-        String newPosition = newX + "" + newY;
-        if (checkBorders(newX, newY) && !node.visited.contains(newPosition)) {
+        if (checkBorders(newX, newY) && checkVisited(node, newX, newY)) {
             Node child = new Node(node, newX, newY);
             node.addChild(child);
         }
+    }
+
+    private boolean checkVisited(Node node, char newX, int newY) {
+        Node currentNode = node.parent;
+        while (currentNode != null) {
+            if ((currentNode.locationX + "" + currentNode.locationY).equals(newX + "" + newY)) {
+                return false;
+            }
+            currentNode = currentNode.parent;
+        }
+        return true;
     }
 
     private boolean checkBorders(char x, int y) {
@@ -70,7 +80,7 @@ public class Tree {
 
     private void printNode(Node node, int level) {
         String indent = "  ".repeat(level);
-        System.out.println(indent + "Node: (" + node.locationX + ", " + node.locationY + ") - Visited: " + node.visited);
+        System.out.println(indent + "Node: (" + node.locationX + ", " + node.locationY);
         for (Node child : node.children) {
             printNode(child, level + 1);
         }
