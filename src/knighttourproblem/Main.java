@@ -11,11 +11,14 @@ public class Main {
 
         scanner.nextLine();
 
-        System.out.print("Enter the initial position: ");
-        String initialPosition = scanner.nextLine();
-
         Tree tree = new Tree(n);
-        tree.createTree(initialPosition);
-
+        String initialPosition;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                initialPosition = (char)(96 + i) + "" + j;
+                tree.createTree(initialPosition);
+                System.out.println(initialPosition);
+            }
+        }
     }
 }

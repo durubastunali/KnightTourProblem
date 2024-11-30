@@ -14,7 +14,6 @@ public class Tree {
         Node root = createRoot(initialPosition);
         setRoot(root);
         buildTree(root);
-
         System.out.println("Tree created.");
     }
 
@@ -31,7 +30,6 @@ public class Tree {
                 buildTree(child);
             }
         }
-
     }
 
     private void possibleMoves(Node node) {
