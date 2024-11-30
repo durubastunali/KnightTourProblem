@@ -17,6 +17,5 @@ public class Main {
         Tree tree = new Tree(n);
         tree.createTree(initialPosition);
 
-        //tree.printTree();
     }
 }

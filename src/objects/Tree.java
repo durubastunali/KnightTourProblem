@@ -2,7 +2,9 @@ package objects;
 
 public class Tree {
     public Node root;
+    public Node solution;
     public int n;
+    private boolean solutionFound = false;
 
     public Tree(int n) {
         this.n = n;
@@ -19,17 +21,27 @@ public class Tree {
     private Node createRoot(String initialPosition) {
         char locationX = initialPosition.charAt(0);
         int locationY = Integer.parseInt(initialPosition.substring(1));
-        return new Node(null, locationX, locationY);
+        return new Node(null, locationX, locationY, 1);
     }
 
     private void buildTree(Node node) {
         possibleMoves(node);
-        for (Node child : node.children) {
-            buildTree(child);
+        if (!solutionFound) {
+            for (Node child : node.children) {
+                buildTree(child);
+            }
         }
+
     }
 
     private void possibleMoves(Node node) {
+        if (node.depth == n * n) {
+            solution = node;
+            printSolutionPath(node);
+            solutionFound = true;
+            return; // Stop further exploration if max depth is reached
+        }
+
         char locationX = node.locationX;
         int locationY = node.locationY;
         move(locationX, locationY, -2, 1, node); // TWO LEFT, ONE UP
@@ -46,10 +58,11 @@ public class Tree {
         char newX = (char) (locationX + moveX);
         int newY = locationY + moveY;
         if (checkBorders(newX, newY) && checkVisited(node, newX, newY)) {
-            Node child = new Node(node, newX, newY);
+            Node child = new Node(node, newX, newY, node.depth + 1); // Increment depth
             node.addChild(child);
         }
     }
+
 
     private boolean checkVisited(Node node, char newX, int newY) {
         Node currentNode = node.parent;
@@ -70,19 +83,11 @@ public class Tree {
         this.root = root;
     }
 
-    public void printTree() {
-        if (root == null) {
-            System.out.println("Tree is empty.");
-            return;
-        }
-        printNode(root, 0);
-    }
-
-    private void printNode(Node node, int level) {
-        String indent = "  ".repeat(level);
-        System.out.println(indent + "Node: (" + node.locationX + ", " + node.locationY);
-        for (Node child : node.children) {
-            printNode(child, level + 1);
+    private void printSolutionPath(Node node) {
+        Node currentNode = node;
+        while (currentNode != null) {
+            System.out.println(currentNode.locationX + "" + currentNode.locationY);
+            currentNode = currentNode.parent;
         }
     }
 }
