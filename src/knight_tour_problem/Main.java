@@ -26,10 +26,16 @@ public class Main {
             for (int j = 1; j <= n; j++) {
                 initialPosition = (char)(96 + i) + "" + j;
                 root = tree.createRoot(initialPosition);
-                if (searchMethod == 'a') {
+                if (searchMethod == 'a') { //BREADTH FIRST SEARCH
                     generalSearch.breadthFirst(root);
-                } else if (searchMethod == 'b') {
+                } else if (searchMethod == 'b') { //DEPTH FIRST SEARCH
                     generalSearch.depthFirst(root);
+                } else if (searchMethod == 'c') { //DFS WITH H1B
+
+                } else if (searchMethod == 'd') { //DFS WITH H2
+
+                } else {
+                    System.out.println("Invalid search method.");
                 }
             }
         }
