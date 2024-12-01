@@ -3,26 +3,27 @@ package search_strategies;
 import objects.Node;
 import objects.Tree;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class GeneralSearch {
+public class Search {
     private final Tree tree;
     private boolean solutionFound = false;
 
 
-    public GeneralSearch(Tree tree) {
+    public Search(Tree tree) {
         this.tree = tree;
     }
 
-    public void depthFirst(Node node) {
-        knightPositionDFS(node);
+    public void depthFirstSearch(Node node) {
+        depthFirstRecursive(node);
         if (!solutionFound) {
             System.out.println("No solution found.");
         }
     }
 
-    private void knightPositionDFS(Node node) {
+    private void depthFirstRecursive(Node node) {
         if (solutionFound) return;
         if (node.depth == tree.n * tree.n) {
             tree.solution = node;
@@ -32,11 +33,11 @@ public class GeneralSearch {
         }
         tree.possibleMoves(node);
         for (Node child : node.children) {
-            knightPositionDFS(child);
+            depthFirstRecursive(child);
         }
     }
 
-    public void breadthFirst(Node root) {
+    public void breadthFirstSearch(Node root) {
         Queue<Node> queue = new LinkedList<>();
         queue.add(root);
         while (!queue.isEmpty() && !solutionFound) {
@@ -53,6 +54,29 @@ public class GeneralSearch {
 
         if (!solutionFound) {
             System.out.println("No solution found.");
+        }
+    }
+
+    public void depthFirstSearchH1B(Node node) {
+        depthFirstRecursiveH1B(node);
+        if (!solutionFound) {
+            System.out.println("No solution found.");
+        }
+    }
+
+    private void depthFirstRecursiveH1B(Node node) {
+        if (solutionFound) return;
+        if (node.depth == tree.n * tree.n) { // Goal condition
+            tree.solution = node;
+            tree.printSolutionPath(node);
+            solutionFound = true;
+            return;
+        }
+        tree.possibleMoves(node);
+        node.children.sort(Comparator.comparingInt(child -> tree.calculateH1B(child)));
+
+        for (Node child : node.children) {
+            depthFirstRecursive(child);
         }
     }
 }

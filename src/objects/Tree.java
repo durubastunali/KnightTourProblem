@@ -4,6 +4,7 @@ public class Tree {
     public Node root;
     public Node solution;
     public int n;
+    public final int[] knightMoves = {-2, -1, 1, 2};
 
     public Tree(int n) {
         this.n = n;
@@ -21,6 +22,15 @@ public class Tree {
         char locationX = node.locationX;
         int locationY = node.locationY;
 
+        for (int i = 0; i < knightMoves.length; i++) {
+            for (int j = 0; j < knightMoves.length; j++) {
+                if (Math.abs(knightMoves[i]) != Math.abs(knightMoves[j])) {
+                    move(locationX, locationY, knightMoves[i], knightMoves[j], node);
+                }
+            }
+        }
+/*
+
         move(locationX, locationY, -2, 1, node);  // TWO LEFT, ONE UP
         move(locationX, locationY, -2, -1, node); // TWO LEFT, ONE DOWN
         move(locationX, locationY, -1, 2, node);  // ONE LEFT, TWO UP
@@ -29,9 +39,13 @@ public class Tree {
         move(locationX, locationY, 2, -1, node);  // TWO RIGHT, ONE DOWN
         move(locationX, locationY, 1, -2, node);  // ONE RIGHT, TWO DOWN
         move(locationX, locationY, -1, -2, node); // ONE LEFT, TWO DOWN
+
+ */
+
+
     }
 
-    public void move(char locationX, int locationY, int moveX, int moveY, Node node) {
+    private void move(char locationX, int locationY, int moveX, int moveY, Node node) {
         char newX = (char) (locationX + moveX);
         int newY = locationY + moveY;
         if (checkBorders(newX, newY) && checkVisited(node, newX, newY)) {
@@ -40,7 +54,7 @@ public class Tree {
         }
     }
 
-    public boolean checkVisited(Node node, char newX, int newY) {
+    private boolean checkVisited(Node node, char newX, int newY) {
         Node currentNode = node.parent;
         while (currentNode != null) {
             if ((currentNode.locationX + "" + currentNode.locationY).equals(newX + "" + newY)) {
@@ -51,11 +65,35 @@ public class Tree {
         return true;
     }
 
-    public boolean checkBorders(char x, int y) {
+    private boolean checkBorders(char x, int y) {
         return x >= 97 && x <= 96 + n && y >= 1 && y <= n;
     }
 
-    public void setRoot(Node root) {
+    public int calculateH1B(Node node) {
+        char nodeX = node.locationX;
+        int nodeY = node.locationY;
+
+        char newX;
+        int newY;
+
+        int h1b = 0;
+
+        for (int i = 0; i < knightMoves.length; i++) {
+            for (int j = 0; j < knightMoves.length; j++) {
+                if (Math.abs(knightMoves[i]) != Math.abs(knightMoves[j])) {
+                    newX = (char)(nodeX + knightMoves[i]);
+                    newY = nodeY + knightMoves[j];
+                    if (checkVisited(node, newX, newY) && checkBorders(newX, newY)) {
+                        h1b++;
+                    }
+                }
+            }
+        }
+
+        return h1b;
+    }
+
+    private void setRoot(Node root) {
         this.root = root;
     }
 

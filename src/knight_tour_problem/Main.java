@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 import objects.Node;
 import objects.Tree;
-import search_strategies.GeneralSearch;
+import search_strategies.Search;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,9 +17,8 @@ public class Main {
         System.out.print("Select search method (a - d): ");
         char searchMethod = scanner.nextLine().charAt(0);
 
-
         Tree tree = new Tree(n);
-        GeneralSearch generalSearch = new GeneralSearch(tree);
+        Search search = new Search(tree);
         String initialPosition;
         Node root;
         for (int i = 1; i <= n; i++) {
@@ -27,11 +26,11 @@ public class Main {
                 initialPosition = (char)(96 + i) + "" + j;
                 root = tree.createRoot(initialPosition);
                 if (searchMethod == 'a') { //BREADTH FIRST SEARCH
-                    generalSearch.breadthFirst(root);
+                    search.breadthFirstSearch(root);
                 } else if (searchMethod == 'b') { //DEPTH FIRST SEARCH
-                    generalSearch.depthFirst(root);
+                    search.depthFirstSearch(root);
                 } else if (searchMethod == 'c') { //DFS WITH H1B
-
+                    search.depthFirstSearchH1B(root);
                 } else if (searchMethod == 'd') { //DFS WITH H2
 
                 } else {
