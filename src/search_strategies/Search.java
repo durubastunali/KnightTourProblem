@@ -10,13 +10,15 @@ import java.util.Queue;
 public class Search {
     private final Tree tree;
     private boolean solutionFound = false;
+    private int heuristic = 0; //0 = no heuristic, 1 = h1b, 2 = h2b
 
 
     public Search(Tree tree) {
         this.tree = tree;
     }
 
-    public void depthFirstSearch(Node node) {
+    public void depthFirstSearch(Node node, int heuristic) {
+        setHeuristic(heuristic);
         depthFirstRecursive(node);
         if (!solutionFound) {
             System.out.println("No solution found.");
@@ -32,6 +34,13 @@ public class Search {
             return;
         }
         tree.possibleMoves(node);
+
+        if (heuristic == 1) {
+            node.children.sort(Comparator.comparingInt(child -> tree.calculateH1B(child)));
+        } else if (heuristic == 2) {
+            //H2B
+        }
+
         for (Node child : node.children) {
             depthFirstRecursive(child);
         }
@@ -57,26 +66,7 @@ public class Search {
         }
     }
 
-    public void depthFirstSearchH1B(Node node) {
-        depthFirstRecursiveH1B(node);
-        if (!solutionFound) {
-            System.out.println("No solution found.");
-        }
-    }
-
-    private void depthFirstRecursiveH1B(Node node) {
-        if (solutionFound) return;
-        if (node.depth == tree.n * tree.n) { // Goal condition
-            tree.solution = node;
-            tree.printSolutionPath(node);
-            solutionFound = true;
-            return;
-        }
-        tree.possibleMoves(node);
-        node.children.sort(Comparator.comparingInt(child -> tree.calculateH1B(child)));
-
-        for (Node child : node.children) {
-            depthFirstRecursive(child);
-        }
+    private void setHeuristic(int heuristic) {
+        this.heuristic = heuristic;
     }
 }

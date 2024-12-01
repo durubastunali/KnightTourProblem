@@ -10,22 +10,20 @@ public class Tree {
         this.n = n;
     }
 
-    public Node createRoot(String initialPosition) {
-        char locationX = initialPosition.charAt(0);
-        int locationY = Integer.parseInt(initialPosition.substring(1));
-        Node rootNode = new Node(null, locationX, locationY, 1);
+    public Node createRoot(int initialX, int initialY) {
+        Node rootNode = new Node(null, initialX, initialY, 1);
         setRoot(rootNode);
         return rootNode;
     }
 
     public void possibleMoves(Node node) {
-        char locationX = node.locationX;
+        int locationX = node.locationX;
         int locationY = node.locationY;
 
-        for (int i = 0; i < knightMoves.length; i++) {
-            for (int j = 0; j < knightMoves.length; j++) {
-                if (Math.abs(knightMoves[i]) != Math.abs(knightMoves[j])) {
-                    move(locationX, locationY, knightMoves[i], knightMoves[j], node);
+        for (int moveHorizontal : knightMoves) {
+            for (int moveVertical : knightMoves) {
+                if (Math.abs(moveHorizontal) != Math.abs(moveVertical)) {
+                    move(locationX, locationY, moveHorizontal, moveVertical, node);
                 }
             }
         }
@@ -45,8 +43,8 @@ public class Tree {
 
     }
 
-    private void move(char locationX, int locationY, int moveX, int moveY, Node node) {
-        char newX = (char) (locationX + moveX);
+    private void move(int locationX, int locationY, int moveX, int moveY, Node node) {
+        int newX = locationX + moveX;
         int newY = locationY + moveY;
         if (checkBorders(newX, newY) && checkVisited(node, newX, newY)) {
             Node child = new Node(node, newX, newY, node.depth + 1);
@@ -54,10 +52,10 @@ public class Tree {
         }
     }
 
-    private boolean checkVisited(Node node, char newX, int newY) {
+    private boolean checkVisited(Node node, int newX, int newY) {
         Node currentNode = node.parent;
         while (currentNode != null) {
-            if ((currentNode.locationX + "" + currentNode.locationY).equals(newX + "" + newY)) {
+            if (currentNode.locationX == newX && currentNode.locationY == newY) {
                 return false;
             }
             currentNode = currentNode.parent;
@@ -65,31 +63,30 @@ public class Tree {
         return true;
     }
 
-    private boolean checkBorders(char x, int y) {
-        return x >= 97 && x <= 96 + n && y >= 1 && y <= n;
+    private boolean checkBorders(int x, int y) {
+        return (x >= 1) && (x <= n) && (y >= 1) && (y <= n);
     }
 
     public int calculateH1B(Node node) {
-        char nodeX = node.locationX;
+        int nodeX = node.locationX;
         int nodeY = node.locationY;
 
-        char newX;
+        int newX;
         int newY;
 
         int h1b = 0;
 
-        for (int i = 0; i < knightMoves.length; i++) {
-            for (int j = 0; j < knightMoves.length; j++) {
-                if (Math.abs(knightMoves[i]) != Math.abs(knightMoves[j])) {
-                    newX = (char)(nodeX + knightMoves[i]);
-                    newY = nodeY + knightMoves[j];
+        for (int moveHorizontal : knightMoves) {
+            for (int moveVertical : knightMoves) {
+                if (Math.abs(moveHorizontal) != Math.abs(moveVertical)) {
+                    newX = nodeX + moveHorizontal;
+                    newY = nodeY + moveVertical;
                     if (checkVisited(node, newX, newY) && checkBorders(newX, newY)) {
                         h1b++;
                     }
                 }
             }
         }
-
         return h1b;
     }
 
@@ -101,8 +98,50 @@ public class Tree {
         Node currentNode = node;
         System.out.println("Solution Path:");
         while (currentNode != null) {
-            System.out.println(currentNode.locationX + "" + currentNode.locationY);
+            System.out.println(currentNode.locationX + "-" + currentNode.locationY);
             currentNode = currentNode.parent;
         }
+    }
+
+    public void checkSolutionCorrect() {
+        //CHECK CORRECT PATH
+        Node node = solution;
+        while (node.parent != null) {
+            int parentX = node.parent.locationX;
+            int parentY = node.parent.locationY;
+            int childX = node.locationX;
+            int childY = node.locationY;
+            if (!((Math.abs(parentX - childX) == 2 && Math.abs(parentY - childY) == 1) ||
+                (Math.abs(parentX - childX) == 1 && Math.abs(parentY - childY) == 2))) {
+                System.out.println("Wrong Solution");
+                return;
+            }
+            node = node.parent;
+        }
+
+        node = solution;
+        while (node != null) {
+            int nodeX = node.locationX;
+            int nodeY = node.locationY;
+
+            Node currentNode = node.parent; // Start checking from the parent of the current node
+            while (currentNode != null) {
+                int curNodeX = currentNode.locationX;
+                int curNodeY = currentNode.locationY;
+
+                // Check for duplicate coordinates
+                if (nodeX == curNodeX && nodeY == curNodeY) {
+                    System.out.println("Wrong Solution2");
+                    return;
+                }
+
+                currentNode = currentNode.parent; // Move to the next parent
+            }
+
+            node = node.parent; // Move to the next node in the chain
+        }
+
+
+        System.out.println("Correct Solution");
     }
 }
