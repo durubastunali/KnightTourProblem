@@ -67,7 +67,7 @@ public class Tree {
         return (x >= 1) && (x <= n) && (y >= 1) && (y <= n);
     }
 
-    public int calculateH1B(Node node) {
+    public int sortByNextPossibleMove(Node node) {
         int nodeX = node.locationX;
         int nodeY = node.locationY;
 
@@ -89,6 +89,20 @@ public class Tree {
         }
         return h1b;
     }
+
+    public int sortByClosestToCorner(Node node) {
+        int x = node.locationX;
+        int y = node.locationY;
+
+        int distanceToTopLeft = Math.abs(x - 1) + Math.abs(y - 1);
+        int distanceToTopRight = Math.abs(x - 1) + Math.abs(y - n);
+        int distanceToBottomLeft = Math.abs(x - n) + Math.abs(y - 1);
+        int distanceToBottomRight = Math.abs(x - n) + Math.abs(y - n);
+
+        return Math.min(Math.min(distanceToTopLeft, distanceToTopRight),
+                Math.min(distanceToBottomLeft, distanceToBottomRight));
+    }
+
 
     private void setRoot(Node root) {
         this.root = root;

@@ -38,9 +38,15 @@ public class Search {
         tree.possibleMoves(node);
 
         if (heuristic == 1) {
-            node.children.sort(Comparator.comparingInt(child -> tree.calculateH1B(child)));
+            node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
+            node.children.sort(Comparator.comparingInt(tree::sortByNextPossibleMove));
+
         } else if (heuristic == 2) {
-            //H2B
+            node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
+            node.children.sort(
+                    Comparator.comparingInt(tree::sortByNextPossibleMove)
+                            .thenComparingInt(tree::sortByClosestToCorner)
+            );
         }
 
         for (Node child : node.children) {
