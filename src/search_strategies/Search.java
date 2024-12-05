@@ -27,12 +27,14 @@ public class Search {
 
     private void depthFirstRecursive(Node node) {
         if (solutionFound) return;
+
         if (node.depth == tree.n * tree.n) {
             tree.solution = node;
             tree.printSolutionPath(node);
             solutionFound = true;
             return;
         }
+
         tree.possibleMoves(node);
 
         if (heuristic == 1) {
@@ -47,10 +49,10 @@ public class Search {
     }
 
     public void breadthFirstSearch(Node root) {
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(root);
-        while (!queue.isEmpty() && !solutionFound) {
-            Node currentNode = queue.poll();
+        Queue<Node> frontier = new LinkedList<>();
+        frontier.add(root);
+        while (!frontier.isEmpty() && !solutionFound) {
+            Node currentNode = frontier.poll();
             if (currentNode.depth == tree.n * tree.n) {
                 tree.solution = currentNode;
                 tree.printSolutionPath(currentNode);
@@ -58,7 +60,7 @@ public class Search {
                 break;
             }
             tree.possibleMoves(currentNode);
-            queue.addAll(currentNode.children);
+            frontier.addAll(currentNode.children);
         }
 
         if (!solutionFound) {
