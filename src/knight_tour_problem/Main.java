@@ -20,6 +20,8 @@ public class Main {
         Tree tree = new Tree(n);
         Search search = new Search(tree);
         Node root;
+
+        outerloop:
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
                 root = tree.createRoot(i, j);
@@ -33,6 +35,14 @@ public class Main {
                     search.depthFirstSearch(root, 2);
                 } else {
                     System.out.println("Invalid search method.");
+                }
+
+                if (search.solutionFound) {
+                    break outerloop;
+                }
+
+                if (i == n && j == n) {
+                    System.out.println("No solution exists.");
                 }
             }
         }

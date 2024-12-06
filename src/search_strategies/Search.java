@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class Search {
     private final Tree tree;
-    private boolean solutionFound = false;
+    public boolean solutionFound = false;
     private int heuristic = 0; //0 = no heuristic, 1 = h1b, 2 = h2b
 
     public Search(Tree tree) {
@@ -19,9 +19,7 @@ public class Search {
     public void depthFirstSearch(Node node, int heuristic) {
         setHeuristic(heuristic);
         depthFirstRecursive(node);
-        if (!solutionFound) {
-            System.out.println("No solution found.");
-        }
+
     }
 
     private void depthFirstRecursive(Node node) {
@@ -33,7 +31,6 @@ public class Search {
             solutionFound = true;
             return;
         }
-
         tree.possibleMoves(node);
 
         if (heuristic == 1) {
