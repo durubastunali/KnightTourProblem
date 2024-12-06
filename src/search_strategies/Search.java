@@ -11,6 +11,7 @@ public class Search {
     private final Tree tree;
     public boolean solutionFound = false;
     private int heuristic = 0; //0 = no heuristic, 1 = h1b, 2 = h2b
+    public int numberOfNodesExpanded = 0;
 
     public Search(Tree tree) {
         this.tree = tree;
@@ -31,6 +32,7 @@ public class Search {
             return;
         }
         tree.possibleMoves(node);
+        numberOfNodesExpanded++;
 
         if (heuristic == 1) {
             //node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
@@ -60,6 +62,7 @@ public class Search {
                 break;
             }
             tree.possibleMoves(currentNode);
+            numberOfNodesExpanded++;
             frontier.addAll(currentNode.children);
         }
         if (!solutionFound) {

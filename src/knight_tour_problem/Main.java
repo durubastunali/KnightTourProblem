@@ -22,7 +22,6 @@ public class Main {
         Node root;
 
         outerloop:
-
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
                 root = tree.createRoot(i, j);
@@ -41,6 +40,7 @@ public class Main {
                     }
                 } catch (OutOfMemoryError outOfMemoryError) {
                     System.out.println("Out of memory.");
+
                     break outerloop;
                 }
 
@@ -51,8 +51,10 @@ public class Main {
 
                 if (i == n && j == n) {
                     System.out.println("No solution exists.");
+
                 }
             }
         }
+        System.out.println("Number of nodes expanded: " + search.numberOfNodesExpanded);
     }
 }

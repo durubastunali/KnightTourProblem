@@ -86,6 +86,7 @@ public class Tree {
     }
 
     public void printSolution(Node node)  {
+        System.out.println("A solution found.");
         try {
             File file = new File("output.txt");
             FileWriter writer = new FileWriter(file, true);
