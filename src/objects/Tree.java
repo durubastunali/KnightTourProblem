@@ -89,7 +89,7 @@ public class Tree {
         System.out.println("A solution found.");
         try {
             File file = new File("src\\knight_tour_problem\\output.txt");
-            FileWriter writer = new FileWriter(file, true);
+            FileWriter writer = new FileWriter(file, false);
             findPath(node, writer);
             writer.close();
         } catch (IOException e) {
