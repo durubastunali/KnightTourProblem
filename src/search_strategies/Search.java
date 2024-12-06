@@ -12,7 +12,6 @@ public class Search {
     private boolean solutionFound = false;
     private int heuristic = 0; //0 = no heuristic, 1 = h1b, 2 = h2b
 
-
     public Search(Tree tree) {
         this.tree = tree;
     }
@@ -38,17 +37,16 @@ public class Search {
         tree.possibleMoves(node);
 
         if (heuristic == 1) {
-            node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
+            //node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
             node.children.sort(Comparator.comparingInt(tree::sortByNextPossibleMove));
 
         } else if (heuristic == 2) {
-            node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
+            //node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
             node.children.sort(
                     Comparator.comparingInt(tree::sortByNextPossibleMove)
                             .thenComparingInt(tree::sortByClosestToCorner)
             );
         }
-
         for (Node child : node.children) {
             depthFirstRecursive(child);
         }
