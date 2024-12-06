@@ -1,5 +1,6 @@
 package search_strategies;
 
+import knight_tour_problem.Main;
 import objects.Node;
 import objects.Tree;
 
@@ -11,7 +12,8 @@ public class Search {
     private final Tree tree;
     public boolean solutionFound = false;
     private int heuristic = 0; //0 = no heuristic, 1 = h1b, 2 = h2b
-    public int numberOfNodesExpanded = 0;
+    public int numberOfNodesExpanded = 1;
+    public boolean timeLimitPassed = false;
 
     public Search(Tree tree) {
         this.tree = tree;
@@ -20,7 +22,6 @@ public class Search {
     public void depthFirstSearch(Node node, int heuristic) {
         setHeuristic(heuristic);
         depthFirstRecursive(node);
-
     }
 
     private void depthFirstRecursive(Node node) {
@@ -31,6 +32,12 @@ public class Search {
             solutionFound = true;
             return;
         }
+
+        if (checkTimeLimitPassed()) {
+            timeLimitPassed = true;
+            return;
+        }
+
         tree.possibleMoves(node);
         numberOfNodesExpanded++;
 
@@ -51,7 +58,6 @@ public class Search {
     }
 
     public void breadthFirstSearch(Node root) {
-
         Queue<Node> frontier = new LinkedList<>();
         frontier.add(root);
         while (!frontier.isEmpty() && !solutionFound) {
@@ -72,5 +78,10 @@ public class Search {
 
     private void setHeuristic(int heuristic) {
         this.heuristic = heuristic;
+    }
+
+    private boolean checkTimeLimitPassed() {
+        long currentTime = System.currentTimeMillis();
+        return currentTime - Main.startTime >= Main.timeLimit;
     }
 }
