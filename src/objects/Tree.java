@@ -88,7 +88,7 @@ public class Tree {
     public void printSolution(Node node)  {
         System.out.println("A solution found.");
         try {
-            File file = new File("output.txt");
+            File file = new File("src\\knight_tour_problem\\output.txt");
             FileWriter writer = new FileWriter(file, true);
             findPath(node, writer);
             writer.close();
