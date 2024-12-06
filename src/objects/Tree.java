@@ -1,5 +1,9 @@
 package objects;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Tree {
     public Node solution;
     public int n;
@@ -81,12 +85,22 @@ public class Tree {
                 Math.min(distanceToBottomLeft, distanceToBottomRight));
     }
 
-    public void printSolutionPath(Node node) {
-        Node currentNode = node;
-        System.out.println("Solution Path:");
-        while (currentNode != null) {
-            System.out.println(currentNode.locationX + "-" + currentNode.locationY);
-            currentNode = currentNode.parent;
+    public void printSolution(Node node)  {
+        try {
+            File file = new File("output.txt");
+            FileWriter writer = new FileWriter(file, true);
+            findPath(node, writer);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Solution couldn't be written to the output file.");
         }
+    }
+
+    private void findPath(Node node, FileWriter writer) throws IOException {
+        if (node.parent != null) {
+            findPath(node.parent, writer);
+        }
+        writer.write(node.locationX + "-" + node.locationY + "\n");
+        System.out.println(node.locationX + "-" + node.locationY);
     }
 }

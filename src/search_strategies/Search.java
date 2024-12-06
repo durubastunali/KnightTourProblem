@@ -27,7 +27,6 @@ public class Search {
 
         if (node.depth == tree.n * tree.n) {
             tree.solution = node;
-            tree.printSolutionPath(node);
             solutionFound = true;
             return;
         }
@@ -50,20 +49,19 @@ public class Search {
     }
 
     public void breadthFirstSearch(Node root) {
+
         Queue<Node> frontier = new LinkedList<>();
         frontier.add(root);
         while (!frontier.isEmpty() && !solutionFound) {
             Node currentNode = frontier.poll();
             if (currentNode.depth == tree.n * tree.n) {
                 tree.solution = currentNode;
-                tree.printSolutionPath(currentNode);
                 solutionFound = true;
                 break;
             }
             tree.possibleMoves(currentNode);
             frontier.addAll(currentNode.children);
         }
-
         if (!solutionFound) {
             System.out.println("No solution found.");
         }
