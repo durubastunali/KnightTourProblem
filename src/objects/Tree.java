@@ -8,6 +8,7 @@ public class Tree {
     public Node solution;
     public int n;
     public final int[] knightMoves = {-2, -1, 1, 2};
+    private FileWriter writer = null;
 
     public Tree(int n) {
         this.n = n;
@@ -68,17 +69,17 @@ public class Tree {
         System.out.println("A solution found.");
         try {
             File file = new File("src\\knight_tour_problem\\output.txt");
-            FileWriter writer = new FileWriter(file, false);
-            findPath(node, writer);
+            writer = new FileWriter(file, false);
+            findPath(node);
             writer.close();
         } catch (IOException e) {
             System.out.println("Solution couldn't be written to the output file.");
         }
     }
 
-    private void findPath(Node node, FileWriter writer) throws IOException {
+    private void findPath(Node node) throws IOException {
         if (node.parent != null) {
-            findPath(node.parent, writer);
+            findPath(node.parent);
         }
         writer.write(node.locationX + "-" + node.locationY + "\n");
         System.out.println(node.locationX + "-" + node.locationY);
