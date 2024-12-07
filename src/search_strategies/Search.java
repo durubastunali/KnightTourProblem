@@ -13,7 +13,6 @@ public class Search {
     public boolean timeLimitPassed = false;
     public final int[] knightMoves = {-2, -1, 1, 2};
     private int locationX, locationY, newX, newY;
-    private Node currentNode;
 
 
     public Search(Tree tree) {
@@ -72,10 +71,13 @@ public class Search {
             timeLimitPassed = true;
             return;
         }
-        ArrayList<Node> frontier = new ArrayList<>();
 
         locationX = node.locationX;
         locationY = node.locationY;
+
+        Node bestNode = null;
+        int bestScore = Integer.MAX_VALUE; // Use a very high score initially
+
         for (int moveHorizontal : knightMoves) {
             for (int moveVertical : knightMoves) {
                 if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
@@ -84,48 +86,20 @@ public class Search {
                 newX = locationX + moveHorizontal;
                 newY = locationY + moveVertical;
                 if (tree.checkInBorders(newX, newY) && tree.checkUnvisited(node, newX, newY)) {
-
-                    frontier.add(new Node(node, newX, newY, node.depth + 1));
+                    int score = tree.sortByNextPossibleMove(new Node(node, newX, newY, node.depth + 1));
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestNode = new Node(node, newX, newY, node.depth + 1);
+                    }
                 }
             }
         }
-        frontier.sort(Comparator.comparingInt(tree::sortByNextPossibleMove));
-        for(int i =0;i<frontier.size();i++){
-            currentNode = frontier.get(i);
-            frontier.remove(currentNode);
+        if (bestNode != null) {
             numberOfNodesExpanded++;
-            depthFirstRecursiveH1B(currentNode);
+            depthFirstRecursiveH1B(bestNode);
         }
-
     }
 
-//    private void depthFirstRecursive(Node node) {
-//        if (solutionFound) return;
-//
-//        if (node.depth == tree.n * tree.n) {
-//            tree.solution = node;
-//            tree.printSolutionPath(node);
-//            solutionFound = true;
-//            return;
-//        }
-//
-//        tree.possibleMoves(node);
-//
-//        if (heuristic == 1) {
-//            //node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
-//            node.children.sort(Comparator.comparingInt(tree::sortByNextPossibleMove));
-//
-//        } else if (heuristic == 2) {
-//            //node.children.removeIf(child -> tree.sortByNextPossibleMove(child) == 0);
-//            node.children.sort(
-//                    Comparator.comparingInt(tree::sortByNextPossibleMove)
-//                            .thenComparingInt(tree::sortByClosestToCorner)
-//            );
-//        }
-//        for (Node child : node.children) {
-//            depthFirstRecursive(child);
-//        }
-//    }
 
     public void breadthFirstSearch(Node root) {
         Queue<Node> frontier = new LinkedList<>();
