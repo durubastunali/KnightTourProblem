@@ -24,6 +24,8 @@ public class Search {
             depthFirstRecursive(node);
         } else if (heuristic == 1) {
             depthFirstRecursiveH1B(node);
+        } else if (heuristic == 2) {
+            depthFirstRecursiveH2(node);
         }
     }
 
@@ -99,6 +101,56 @@ public class Search {
             depthFirstRecursiveH1B(bestNode);
         }
     }
+
+    private void depthFirstRecursiveH2(Node node) {
+        if (solutionFound) return;
+
+        if (node.depth == tree.n * tree.n) {
+            tree.solution = node;
+            solutionFound = true;
+            return;
+        }
+
+        if (checkTimeLimitPassed()) {
+            timeLimitPassed = true;
+            return;
+        }
+
+        locationX = node.locationX;
+        locationY = node.locationY;
+
+        Node bestNode = null;
+        int bestScore = 8;
+
+        for (int moveHorizontal : knightMoves) {
+            for (int moveVertical : knightMoves) {
+                if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
+                    continue;
+                }
+                newX = locationX + moveHorizontal;
+                newY = locationY + moveVertical;
+                if (tree.checkInBorders(newX, newY) && tree.checkUnvisited(node, newX, newY)) {
+                    int score = tree.sortByNextPossibleMove(new Node(node, newX, newY, node.depth + 1));
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestNode = new Node(node, newX, newY, node.depth + 1);
+                    } else if (score == bestScore) {
+                        int currentDistance = tree.sortByClosestToCorner(bestNode);
+                        int newNodeDistance = tree.sortByClosestToCorner(new Node(node, newX, newY, node.depth + 1));
+                        if (newNodeDistance < currentDistance) {
+                            bestNode = new Node(node, newX, newY, node.depth + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (bestNode != null) {
+            numberOfNodesExpanded++;
+            depthFirstRecursiveH2(bestNode);
+        }
+    }
+
 
 
     public void breadthFirstSearch(Node root) {
