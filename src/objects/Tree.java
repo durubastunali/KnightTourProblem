@@ -17,28 +17,7 @@ public class Tree {
         return new Node(null, initialX, initialY, 1);
     }
 
-    public void possibleMoves(Node node) {
-        int locationX = node.locationX;
-        int locationY = node.locationY;
-        for (int moveHorizontal : knightMoves) {
-            for (int moveVertical : knightMoves) {
-                if (Math.abs(moveHorizontal) != Math.abs(moveVertical)) {
-                    move(locationX, locationY, moveHorizontal, moveVertical, node);
-                }
-            }
-        }
-    }
-
-    private void move(int locationX, int locationY, int moveX, int moveY, Node node) {
-        int newX = locationX + moveX;
-        int newY = locationY + moveY;
-        if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
-            Node child = new Node(node, newX, newY, node.depth + 1);
-            node.addChild(child);
-        }
-    }
-
-    private boolean checkUnvisited(Node node, int newX, int newY) {
+    public boolean checkUnvisited(Node node, int newX, int newY) {
         Node currentNode = node.parent;
         while (currentNode != null) {
             if (currentNode.locationX == newX && currentNode.locationY == newY) {
@@ -49,7 +28,7 @@ public class Tree {
         return true;
     }
 
-    private boolean checkInBorders(int x, int y) {
+    public boolean checkInBorders(int x, int y) {
         return (x >= 1) && (x <= n) && (y >= 1) && (y <= n);
     }
 
