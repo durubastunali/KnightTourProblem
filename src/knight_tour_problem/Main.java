@@ -1,14 +1,14 @@
 package knight_tour_problem;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
-
-import objects.Node;
-import objects.Tree;
-import search_strategies.Search;
 
 public class Main {
 
     public static long startTime;
     public static long timeLimit;
+    public static FileWriter writer;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -25,8 +25,7 @@ public class Main {
         System.out.print("Time limit (t): ");
         int t = scanner.nextInt();
 
-        Tree tree = new Tree(n);
-        Search search = new Search(tree);
+        Search search = new Search(n);
         Node root;
 
         timeLimit = (long) t * 60 * 1000;
@@ -35,7 +34,8 @@ public class Main {
         outerloop:
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                root = tree.createRoot(i, j);
+
+                root = new Node(null, i, j, 1);
                 try {
                     if (searchMethod == 'a') { //BREADTH FIRST SEARCH
                         search.breadthFirstSearch(root);
@@ -55,7 +55,7 @@ public class Main {
                 }
 
                 if (search.solutionFound) {
-                    tree.printSolution(tree.solution);
+                    printSolution(search.solution);
                     break outerloop;
                 }
 
@@ -80,5 +80,25 @@ public class Main {
 
         System.out.printf("Finished in %02d:%02d:%03d%n", minutes, seconds, milliseconds);
         System.out.println("Number of nodes expanded: " + search.numberOfNodesExpanded);
+    }
+
+    public static void printSolution(Node node)  {
+        System.out.println("A solution found.");
+        try {
+            File file = new File("src\\knight_tour_problem\\output.txt");
+            writer = new FileWriter(file, false);
+            findPath(node);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Solution couldn't be written to the output file.");
+        }
+    }
+
+    private static void findPath(Node node) throws IOException {
+        if (node.parent != null) {
+            findPath(node.parent);
+        }
+        writer.write(node.locationX + "-" + node.locationY + "\n");
+        System.out.println(node.locationX + "-" + node.locationY);
     }
 }

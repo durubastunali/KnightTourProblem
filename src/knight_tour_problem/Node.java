@@ -1,4 +1,4 @@
-package objects;
+package knight_tour_problem;
 
 public class Node {
     public int locationY;
