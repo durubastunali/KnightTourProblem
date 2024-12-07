@@ -76,7 +76,7 @@ public class Search {
         locationY = node.locationY;
 
         Node bestNode = null;
-        int bestScore = Integer.MAX_VALUE; // Use a very high score initially
+        int bestScore = 8;
 
         for (int moveHorizontal : knightMoves) {
             for (int moveVertical : knightMoves) {
