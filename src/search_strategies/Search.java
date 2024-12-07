@@ -4,28 +4,28 @@ import knight_tour_problem.Main;
 import objects.Node;
 import objects.Tree;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Search {
     private final Tree tree;
     public boolean solutionFound = false;
-    private int heuristic = 0; //0 = no heuristic, 1 = h1b, 2 = h2b
     public int numberOfNodesExpanded = 1;
     public boolean timeLimitPassed = false;
     public final int[] knightMoves = {-2, -1, 1, 2};
     private int locationX, locationY, newX, newY;
-    private List<Node> children ;
+    private Node currentNode;
+
 
     public Search(Tree tree) {
         this.tree = tree;
     }
 
     public void depthFirstSearch(Node node, int heuristic) {
-        setHeuristic(heuristic);
-        depthFirstRecursive(node);
+        if (heuristic == 0) {
+            depthFirstRecursive(node);
+        } else if (heuristic == 1) {
+            depthFirstRecursiveH1B(node);
+        }
     }
 
     private void depthFirstRecursive(Node node) {
@@ -57,6 +57,46 @@ public class Search {
                 }
             }
         }
+    }
+
+    private void depthFirstRecursiveH1B(Node node) {
+        if (solutionFound) return;
+
+        if (node.depth == tree.n * tree.n) {
+            tree.solution = node;
+            solutionFound = true;
+            return;
+        }
+
+        if (checkTimeLimitPassed()) {
+            timeLimitPassed = true;
+            return;
+        }
+        ArrayList<Node> frontier = new ArrayList<>();
+
+        locationX = node.locationX;
+        locationY = node.locationY;
+        for (int moveHorizontal : knightMoves) {
+            for (int moveVertical : knightMoves) {
+                if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
+                    continue;
+                }
+                newX = locationX + moveHorizontal;
+                newY = locationY + moveVertical;
+                if (tree.checkInBorders(newX, newY) && tree.checkUnvisited(node, newX, newY)) {
+
+                    frontier.add(new Node(node, newX, newY, node.depth + 1));
+                }
+            }
+        }
+        frontier.sort(Comparator.comparingInt(tree::sortByNextPossibleMove));
+        for(int i =0;i<frontier.size();i++){
+            currentNode = frontier.get(i);
+            frontier.remove(currentNode);
+            numberOfNodesExpanded++;
+            depthFirstRecursiveH1B(currentNode);
+        }
+
     }
 
 //    private void depthFirstRecursive(Node node) {
@@ -115,10 +155,6 @@ public class Search {
             }
             numberOfNodesExpanded++;
         }
-    }
-
-    private void setHeuristic(int heuristic) {
-        this.heuristic = heuristic;
     }
 
     private boolean checkTimeLimitPassed() {
