@@ -90,14 +90,17 @@ public class Search {
     public void breadthFirstSearch(Node root) {
         Queue<Node> frontier = new LinkedList<>();
         frontier.add(root);
+        Node currentNode;
         while (!frontier.isEmpty() && !solutionFound) {
-            Node currentNode = frontier.poll();
+            currentNode = frontier.poll();
             if (currentNode.depth == tree.n * tree.n) {
                 tree.solution = currentNode;
                 solutionFound = true;
                 break;
             }
 
+            locationX = currentNode.locationX;
+            locationY = currentNode.locationY;
             for (int moveHorizontal : knightMoves) {
                 for (int moveVertical : knightMoves) {
                     if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
@@ -111,9 +114,6 @@ public class Search {
                 }
             }
             numberOfNodesExpanded++;
-        }
-        if (!solutionFound) {
-            System.out.println("No solution found.");
         }
     }
 
