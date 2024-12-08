@@ -90,8 +90,8 @@ public class Main {
             writer = new FileWriter(file, false);
 
             while(currentNode != null) {
-                writer.write(node.locationX + "-" + node.locationY + "\n");
-                System.out.println(node.locationX + "-" + node.locationY);
+                writer.write(currentNode.locationX + "-" + currentNode.locationY + "\n");
+                System.out.println(currentNode.locationX + "-" + currentNode.locationY);
                 currentNode = currentNode.parent;
             }
 
