@@ -212,17 +212,13 @@ public class Search {
     }
 
     private int sortByClosestToCorner(Node node) {
-        int x = node.locationX;
-        int y = node.locationY;
-
-        int distanceToTopLeft = Math.abs(x - 1) + Math.abs(y - 1);
-        int distanceToTopRight = Math.abs(x - 1) + Math.abs(y - n);
-        int distanceToBottomLeft = Math.abs(x - n) + Math.abs(y - 1);
-        int distanceToBottomRight = Math.abs(x - n) + Math.abs(y - n);
-
-        return Math.min(Math.min(distanceToTopLeft, distanceToTopRight),
-                Math.min(distanceToBottomLeft, distanceToBottomRight));
+        int x = node.locationX - 1;
+        int y = node.locationY - 1;
+        int distanceX = Math.min(x, n - 1 - x);
+        int distanceY = Math.min(y, n - 1 - y);
+        return distanceX + distanceY;
     }
+
 
     private boolean checkTimeLimitPassed() {
         long currentTime = System.currentTimeMillis();
