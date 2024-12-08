@@ -42,18 +42,27 @@ public class Search {
 
         locationX = node.locationX;
         locationY = node.locationY;
+
+
+        List<Node> children = new ArrayList<>();
+
         for (int moveHorizontal : knightMoves) {
             for (int moveVertical : knightMoves) {
                 if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
-                  continue;
+                    continue;
                 }
                 newX = locationX + moveHorizontal;
                 newY = locationY + moveVertical;
+
                 if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
-                    numberOfNodesExpanded++;
-                    depthFirstRecursive(new Node(node, newX, newY, node.depth + 1));
+                    children.add(new Node(node, newX, newY, node.depth + 1));
                 }
             }
+        }
+
+        for (Node child : children) {
+            numberOfNodesExpanded++;
+            depthFirstRecursive(child);
         }
     }
 
@@ -73,7 +82,6 @@ public class Search {
 
         locationX = node.locationX;
         locationY = node.locationY;
-
 
         List<Node> children = new ArrayList<>();
 
@@ -114,7 +122,6 @@ public class Search {
 
         locationX = node.locationX;
         locationY = node.locationY;
-
 
         List<Node> children = new ArrayList<>();
 
