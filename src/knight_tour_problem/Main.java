@@ -19,7 +19,7 @@ public class Main {
         scanner.nextLine();
 
         System.out.print("Search method (a-d): ");
-        char searchMethod = scanner.nextLine().charAt(0);
+        String searchMethod = scanner.nextLine();
 
 
         System.out.print("Time limit (t): ");
@@ -31,42 +31,42 @@ public class Main {
         timeLimit = (long) t * 60 * 1000;
         startTime = System.currentTimeMillis();
 
-        outerloop:
+        outerLoop:
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
 
                 root = new Node(null, i, j, 1);
                 try {
-                    if (searchMethod == 'a') { //BREADTH FIRST SEARCH
+                    if (searchMethod.equalsIgnoreCase("a")) { //BREADTH FIRST SEARCH
                         search.breadthFirstSearch(root);
-                    } else if (searchMethod == 'b') { //DEPTH FIRST SEARCH
+                    } else if (searchMethod.equalsIgnoreCase("b")) { //DEPTH FIRST SEARCH
                         search.depthFirstSearch(root, 0);
-                    } else if (searchMethod == 'c') { //DFS WITH H1B
+                    } else if (searchMethod.equalsIgnoreCase("c")) { //DFS WITH H1B
                         search.depthFirstSearch(root, 1);
-                    } else if (searchMethod == 'd') { //DFS WITH H2
+                    } else if (searchMethod.equalsIgnoreCase("d")) { //DFS WITH H2
                         search.depthFirstSearch(root, 2);
                     } else {
                         System.out.println("Invalid search method.");
-                        break outerloop;
+                        break outerLoop;
                     }
                 } catch (OutOfMemoryError | StackOverflowError e) {
                     System.out.println("Out of memory.");
-                    break outerloop;
+                    break outerLoop;
                 }
 
                 if (search.solutionFound) {
-                    printSolution(search.solution);
-                    break outerloop;
+                    nonRecursivePrintSolution(search.solution);
+                    break outerLoop;
                 }
 
                 if (search.timeLimitPassed) {
                     System.out.println("Timeout.");
-                    break outerloop;
+                    break outerLoop;
                 }
 
                 if (i == n && j == n) {
                     System.out.println("No solution exists.");
-                    break outerloop;
+                    break outerLoop;
                 }
             }
         }
@@ -82,7 +82,26 @@ public class Main {
         System.out.println("Number of nodes expanded: " + search.numberOfNodesExpanded);
     }
 
-    public static void printSolution(Node node)  {
+    private static void nonRecursivePrintSolution(Node node) {
+        System.out.println("A solution found.");
+        Node currentNode = node;
+        try {
+            File file = new File("src\\knight_tour_problem\\output.txt");
+            writer = new FileWriter(file, false);
+
+            while(currentNode != null) {
+                writer.write(node.locationX + "-" + node.locationY + "\n");
+                System.out.println(node.locationX + "-" + node.locationY);
+                currentNode = currentNode.parent;
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Solution couldn't be written to the output file.");
+        }
+    }
+
+    private static void printSolution(Node node)  {
         System.out.println("A solution found.");
         try {
             File file = new File("src\\knight_tour_problem\\output.txt");

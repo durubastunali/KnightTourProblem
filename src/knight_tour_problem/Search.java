@@ -74,8 +74,8 @@ public class Search {
         locationX = node.locationX;
         locationY = node.locationY;
 
-        Node bestNode = null;
-        int bestScore = 8;
+
+        List<Node> children = new ArrayList<>();
 
         for (int moveHorizontal : knightMoves) {
             for (int moveVertical : knightMoves) {
@@ -84,18 +84,17 @@ public class Search {
                 }
                 newX = locationX + moveHorizontal;
                 newY = locationY + moveVertical;
+
                 if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
-                    int score = sortByNextPossibleMove(new Node(node, newX, newY, node.depth + 1));
-                    if (score < bestScore) {
-                        bestScore = score;
-                        bestNode = new Node(node, newX, newY, node.depth + 1);
-                    }
+                    children.add(new Node(node, newX, newY, node.depth + 1));
                 }
             }
         }
-        if (bestNode != null) {
+        children.sort(Comparator.comparingInt(this::sortByNextPossibleMove));
+
+        for (Node child : children) {
             numberOfNodesExpanded++;
-            depthFirstRecursiveH1B(bestNode);
+            depthFirstRecursiveH1B(child);
         }
     }
 
@@ -116,8 +115,8 @@ public class Search {
         locationX = node.locationX;
         locationY = node.locationY;
 
-        Node bestNode = null;
-        int bestScore = 8;
+
+        List<Node> children = new ArrayList<>();
 
         for (int moveHorizontal : knightMoves) {
             for (int moveVertical : knightMoves) {
@@ -126,29 +125,20 @@ public class Search {
                 }
                 newX = locationX + moveHorizontal;
                 newY = locationY + moveVertical;
+
                 if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
-                    int score = sortByNextPossibleMove(new Node(node, newX, newY, node.depth + 1));
-                    if (score < bestScore) {
-                        bestScore = score;
-                        bestNode = new Node(node, newX, newY, node.depth + 1);
-                    } else if (score == bestScore) {
-                        int currentDistance = sortByClosestToCorner(bestNode);
-                        int newNodeDistance = sortByClosestToCorner(new Node(node, newX, newY, node.depth + 1));
-                        if (newNodeDistance < currentDistance) {
-                            bestNode = new Node(node, newX, newY, node.depth + 1);
-                        }
-                    }
+                    children.add(new Node(node, newX, newY, node.depth + 1));
                 }
             }
         }
+        children.sort(Comparator.comparingInt(this::sortByNextPossibleMove)
+                .thenComparingInt(this::sortByClosestToCorner));
 
-        if (bestNode != null) {
+        for (Node child : children) {
             numberOfNodesExpanded++;
-            depthFirstRecursiveH2(bestNode);
+            depthFirstRecursiveH2(child);
         }
     }
-
-
 
     public void breadthFirstSearch(Node root) {
         Queue<Node> frontier = new LinkedList<>();
@@ -180,7 +170,7 @@ public class Search {
         }
     }
 
-    public boolean checkUnvisited(Node node, int newX, int newY) {
+    private boolean checkUnvisited(Node node, int newX, int newY) {
         Node currentNode = node.parent;
         while (currentNode != null) {
             if (currentNode.locationX == newX && currentNode.locationY == newY) {
@@ -191,11 +181,11 @@ public class Search {
         return true;
     }
 
-    public boolean checkInBorders(int x, int y) {
+    private boolean checkInBorders(int x, int y) {
         return (x >= 1) && (x <= n) && (y >= 1) && (y <= n);
     }
 
-    public int sortByNextPossibleMove(Node node) {
+    private int sortByNextPossibleMove(Node node) {
         int nodeX = node.locationX;
         int nodeY = node.locationY;
         int newX, newY, h1b = 0;
@@ -214,7 +204,7 @@ public class Search {
         return h1b;
     }
 
-    public int sortByClosestToCorner(Node node) {
+    private int sortByClosestToCorner(Node node) {
         int x = node.locationX;
         int y = node.locationY;
 
