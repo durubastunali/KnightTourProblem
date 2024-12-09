@@ -19,7 +19,7 @@ public class Main {
         scanner.nextLine();
 
         System.out.print("Search method (a-d): ");
-        String searchMethod = scanner.nextLine();
+        char searchMethod = scanner.nextLine().charAt(0);
 
 
         System.out.print("Time limit (t): ");
@@ -34,21 +34,9 @@ public class Main {
         outerLoop:
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-
                 root = new Node(null, i, j, 1);
                 try {
-                    if (searchMethod.equalsIgnoreCase("a")) { //BREADTH FIRST SEARCH
-                        search.breadthFirstSearch(root);
-                    } else if (searchMethod.equalsIgnoreCase("b")) { //DEPTH FIRST SEARCH
-                        search.depthFirstSearch(root, 0);
-                    } else if (searchMethod.equalsIgnoreCase("c")) { //DFS WITH H1B
-                        search.depthFirstSearch(root, 1);
-                    } else if (searchMethod.equalsIgnoreCase("d")) { //DFS WITH H2
-                        search.depthFirstSearch(root, 2);
-                    } else {
-                        System.out.println("Invalid search method.");
-                        break outerLoop;
-                    }
+                    search.treeSearch(root, searchMethod);
                 } catch (OutOfMemoryError | StackOverflowError e) {
                     System.out.println("Out of memory.");
                     break outerLoop;

@@ -9,172 +9,70 @@ public class Search {
     public int numberOfNodesExpanded = 1;
     public boolean timeLimitPassed = false;
     public final int[] knightMoves = {-2, -1, 1, 2};
-    private int locationX, locationY, newX, newY;
+    private final List<Node> frontier = new ArrayList<>();
 
 
     public Search(int n) {
         this.n = n;
     }
 
-    public void depthFirstSearch(Node node, int heuristic) {
-        if (heuristic == 0) {
-            depthFirstRecursive(node);
-        } else if (heuristic == 1) {
-            depthFirstRecursiveH1B(node);
-        } else if (heuristic == 2) {
-            depthFirstRecursiveH2(node);
-        }
-    }
-
-    private void depthFirstRecursive(Node node) {
-        if (solutionFound) return;
-
-        if (node.depth == n * n) {
-            solution = node;
-            solutionFound = true;
-            return;
-        }
-
-        if (checkTimeLimitPassed()) {
-            timeLimitPassed = true;
-            return;
-        }
-
-        locationX = node.locationX;
-        locationY = node.locationY;
-
-
-        List<Node> children = new ArrayList<>();
-
-        for (int moveHorizontal : knightMoves) {
-            for (int moveVertical : knightMoves) {
-                if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
-                    continue;
-                }
-                newX = locationX + moveHorizontal;
-                newY = locationY + moveVertical;
-
-                if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
-                    children.add(new Node(node, newX, newY, node.depth + 1));
-                }
-            }
-        }
-
-        for (Node child : children) {
-            numberOfNodesExpanded++;
-            depthFirstRecursive(child);
-        }
-    }
-
-    private void depthFirstRecursiveH1B(Node node) {
-        if (solutionFound) return;
-
-        if (node.depth == n * n) {
-            solution = node;
-            solutionFound = true;
-            return;
-        }
-
-        if (checkTimeLimitPassed()) {
-            timeLimitPassed = true;
-            return;
-        }
-
-        locationX = node.locationX;
-        locationY = node.locationY;
-
-        List<Node> children = new ArrayList<>();
-
-        for (int moveHorizontal : knightMoves) {
-            for (int moveVertical : knightMoves) {
-                if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
-                    continue;
-                }
-                newX = locationX + moveHorizontal;
-                newY = locationY + moveVertical;
-
-                if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
-                    children.add(new Node(node, newX, newY, node.depth + 1));
-                }
-            }
-        }
-        children.sort(Comparator.comparingInt(this::sortByNextPossibleMove));
-
-        for (Node child : children) {
-            numberOfNodesExpanded++;
-            depthFirstRecursiveH1B(child);
-        }
-    }
-
-    private void depthFirstRecursiveH2(Node node) {
-        if (solutionFound) return;
-
-        if (node.depth == n * n) {
-            solution = node;
-            solutionFound = true;
-            return;
-        }
-
-        if (checkTimeLimitPassed()) {
-            timeLimitPassed = true;
-            return;
-        }
-
-        locationX = node.locationX;
-        locationY = node.locationY;
-
-        List<Node> children = new ArrayList<>();
-
-        for (int moveHorizontal : knightMoves) {
-            for (int moveVertical : knightMoves) {
-                if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
-                    continue;
-                }
-                newX = locationX + moveHorizontal;
-                newY = locationY + moveVertical;
-
-                if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
-                    children.add(new Node(node, newX, newY, node.depth + 1));
-                }
-            }
-        }
-        children.sort(Comparator.comparingInt(this::sortByNextPossibleMove)
-                .thenComparingInt(this::sortByClosestToCorner));
-
-        for (Node child : children) {
-            numberOfNodesExpanded++;
-            depthFirstRecursiveH2(child);
-        }
-    }
-
-    public void breadthFirstSearch(Node root) {
-        Queue<Node> frontier = new LinkedList<>();
+    public void treeSearch(Node root, char searchStrategy) {
         frontier.add(root);
-        Node currentNode;
-        while (!frontier.isEmpty() && !solutionFound) {
-            currentNode = frontier.poll();
-            if (currentNode.depth == n * n) {
-                solution = currentNode;
-                solutionFound = true;
+        Node node = root;
+        while (true) {
+            if (node.depth == n * n) {
+                solution = node;
+                break;
+            }
+            if (frontier.isEmpty()) {
+                break;
+            }
+            if (checkTimeLimitPassed()) {
+                timeLimitPassed = true;
                 break;
             }
 
-            locationX = currentNode.locationX;
-            locationY = currentNode.locationY;
-            for (int moveHorizontal : knightMoves) {
-                for (int moveVertical : knightMoves) {
-                    if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
-                        continue;
-                    }
-                    newX = locationX + moveHorizontal;
-                    newY = locationY + moveVertical;
-                    if (checkInBorders(newX, newY) && checkUnvisited(currentNode, newX, newY)) {
-                        frontier.add(new Node(currentNode, newX, newY, currentNode.depth + 1));
-                    }
-                }
+            if (searchStrategy == 'a') {
+                node = frontier.getFirst();
+                frontier.removeFirst();
+
+            } else if (searchStrategy == 'b' || searchStrategy == 'c' || searchStrategy == 'd') {
+                node = frontier.getLast();
+                frontier.removeLast();
             }
+
+            getChildren(node, searchStrategy);
             numberOfNodesExpanded++;
         }
+    }
+
+    private void getChildren(Node node, char searchStrategy) {
+        List<Node> children = new ArrayList<>();
+        for (int moveHorizontal : knightMoves) {
+            for (int moveVertical : knightMoves) {
+                if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
+                    continue;
+                }
+                int newX = node.locationX + moveHorizontal;
+                int newY = node.locationY + moveVertical;
+
+                if (checkInBorders(newX, newY) && checkUnvisited(node, newX, newY)) {
+                    children.add(new Node(node, newX, newY, node.depth + 1));
+                }
+            }
+        }
+        if (searchStrategy == 'c') {
+            children.sort(Comparator.comparingInt(this::sortByNextPossibleMove));
+        } else if (searchStrategy == 'd') {
+            children.sort(Comparator.comparingInt(this::sortByNextPossibleMove)
+                    .thenComparingInt(this::sortByClosestToCorner));
+        }
+
+        if (searchStrategy != 'a') {
+            children.reversed();
+        }
+
+        frontier.addAll(children);
     }
 
     private boolean checkUnvisited(Node node, int newX, int newY) {
