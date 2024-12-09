@@ -1,16 +1,19 @@
 package knight_tour_problem;
 
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Search {
-    public Node solution;
     public int n;
-    public boolean solutionFound = false;
-    public int numberOfNodesExpanded = 1;
+    public Node solution = null;
     public boolean timeLimitPassed = false;
-    public final int[] knightMoves = {-2, -1, 1, 2};
-    private final List<Node> frontier = new ArrayList<>();
 
+    public final int[] knightMoves = {2, -2, +1, -1};
+    private final ArrayList<Node> frontier = new ArrayList<>();
+    private final ArrayList<Node> children = new ArrayList<>();
+    public int numberOfNodesExpanded = 0;
 
     public Search(int n) {
         this.n = n;
@@ -22,23 +25,23 @@ public class Search {
         while (true) {
             if (node.depth == n * n) {
                 solution = node;
-                break;
+                return;
             }
             if (frontier.isEmpty()) {
-                break;
+                return;
             }
             if (checkTimeLimitPassed()) {
                 timeLimitPassed = true;
-                break;
+                return;
             }
 
             if (searchStrategy == 'a') {
-                node = frontier.getFirst();
-                frontier.removeFirst();
-
+                node = frontier.removeFirst();
             } else if (searchStrategy == 'b' || searchStrategy == 'c' || searchStrategy == 'd') {
-                node = frontier.getLast();
-                frontier.removeLast();
+                node = frontier.removeLast();
+            } else {
+                System.out.println("Invalid search method.");
+                return;
             }
 
             getChildren(node, searchStrategy);
@@ -47,7 +50,7 @@ public class Search {
     }
 
     private void getChildren(Node node, char searchStrategy) {
-        List<Node> children = new ArrayList<>();
+        children.clear();
         for (int moveHorizontal : knightMoves) {
             for (int moveVertical : knightMoves) {
                 if (Math.abs(moveHorizontal) == Math.abs(moveVertical)) {
@@ -69,7 +72,7 @@ public class Search {
         }
 
         if (searchStrategy != 'a') {
-            children.reversed();
+            Collections.reverse(children);
         }
 
         frontier.addAll(children);
@@ -116,7 +119,6 @@ public class Search {
         int distanceY = Math.min(y, n - 1 - y);
         return distanceX + distanceY;
     }
-
 
     private boolean checkTimeLimitPassed() {
         long currentTime = System.currentTimeMillis();

@@ -21,72 +21,38 @@ public class Main {
         System.out.print("Search method (a-d): ");
         char searchMethod = scanner.nextLine().charAt(0);
 
-
         System.out.print("Time limit (t): ");
         int t = scanner.nextInt();
 
         Search search = new Search(n);
-        Node root;
 
         timeLimit = (long) t * 60 * 1000;
         startTime = System.currentTimeMillis();
 
-        outerLoop:
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                root = new Node(null, i, j, 1);
-                try {
-                    search.treeSearch(root, searchMethod);
-                } catch (OutOfMemoryError | StackOverflowError e) {
-                    System.out.println("Out of memory.");
-                    break outerLoop;
-                }
-
-                if (search.solutionFound) {
-                    nonRecursivePrintSolution(search.solution);
-                    break outerLoop;
-                }
-
-                if (search.timeLimitPassed) {
-                    System.out.println("Timeout.");
-                    break outerLoop;
-                }
-
-                if (i == n && j == n) {
-                    System.out.println("No solution exists.");
-                    break outerLoop;
-                }
+        try {
+            search.treeSearch(new Node(null, 1, 1, 1), searchMethod);
+            if (search.solution != null) {
+                printSolution(search.solution);
+            } else if (search.timeLimitPassed) {
+                System.out.println("Timeout.");
+            } else {
+                System.out.println("No solution exists.");
             }
+        } catch (OutOfMemoryError e) {
+            System.out.println("Out of memory.");
+        } catch (StackOverflowError e) {
+            System.out.println("Stack overflow.");
         }
 
         long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
+        long runTime = endTime - startTime;
 
-        long minutes = elapsedTime / (60 * 1000);
-        long seconds = (elapsedTime % (60 * 1000)) / 1000;
-        long milliseconds = elapsedTime % 1000;
+        long minutes = runTime / (60 * 1000);
+        long seconds = (runTime % (60 * 1000)) / 1000;
+        long milliseconds = runTime % 1000;
 
         System.out.printf("Finished in %02d:%02d:%03d%n", minutes, seconds, milliseconds);
         System.out.println("Number of nodes expanded: " + search.numberOfNodesExpanded);
-    }
-
-    private static void nonRecursivePrintSolution(Node node) {
-        System.out.println("A solution found.");
-        Node currentNode = node;
-        try {
-            File file = new File("src\\knight_tour_problem\\output.txt");
-            writer = new FileWriter(file, false);
-
-            while(currentNode != null) {
-                writer.write(currentNode.locationX + "-" + currentNode.locationY + "\n");
-                System.out.println(currentNode.locationX + "-" + currentNode.locationY);
-                currentNode = currentNode.parent;
-            }
-
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Solution couldn't be written to the output file.");
-        }
     }
 
     private static void printSolution(Node node)  {
