@@ -10,7 +10,7 @@ public class Search {
     public Node solution = null;
     public boolean timeLimitPassed = false;
 
-    public final int[] knightMoves = {2, -2, +1, -1};
+    public final int[] knightMoves = {-1, -2, 2, 1};
     private final ArrayList<Node> frontier = new ArrayList<>();
     private final ArrayList<Node> children = new ArrayList<>();
     public int numberOfNodesExpanded = 0;
