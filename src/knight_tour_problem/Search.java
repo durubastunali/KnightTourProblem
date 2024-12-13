@@ -65,10 +65,10 @@ public class Search {
             }
         }
         if (searchStrategy == 'c') {
-            children.sort(Comparator.comparingInt(this::sortByNextPossibleMove));
+            children.sort(Comparator.comparingInt(this::getNumberOfPossibleMoves));
         } else if (searchStrategy == 'd') {
-            children.sort(Comparator.comparingInt(this::sortByNextPossibleMove)
-                    .thenComparingInt(this::sortByClosestToCorner));
+            children.sort(Comparator.comparingInt(this::getNumberOfPossibleMoves)
+                    .thenComparingInt(this::getDistanceToCorner));
         }
 
         if (searchStrategy != 'a') {
@@ -93,7 +93,7 @@ public class Search {
         return (x >= 1) && (x <= n) && (y >= 1) && (y <= n);
     }
 
-    private int sortByNextPossibleMove(Node node) {
+    private int getNumberOfPossibleMoves(Node node) {
         int nodeX = node.locationX;
         int nodeY = node.locationY;
         int newX, newY, h1b = 0;
@@ -112,7 +112,7 @@ public class Search {
         return h1b;
     }
 
-    private int sortByClosestToCorner(Node node) {
+    private int getDistanceToCorner(Node node) {
         int x = node.locationX - 1;
         int y = node.locationY - 1;
         int distanceX = Math.min(x, n - 1 - x);
