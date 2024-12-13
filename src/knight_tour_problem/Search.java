@@ -113,10 +113,10 @@ public class Search {
     }
 
     private int getDistanceToCorner(Node node) {
-        int x = node.locationX - 1;
-        int y = node.locationY - 1;
-        int distanceX = Math.min(x, n - 1 - x);
-        int distanceY = Math.min(y, n - 1 - y);
+        int x = node.locationX;
+        int y = node.locationY;
+        int distanceX = Math.min(x, n - x);
+        int distanceY = Math.min(y, n - y);
         return distanceX + distanceY;
     }
 
