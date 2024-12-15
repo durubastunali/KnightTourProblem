@@ -31,8 +31,8 @@ public class Main {
         timeLimit = (long) t * 60 * 1000; // Set the time limit in milliseconds
         startTime = System.currentTimeMillis(); // Set the starting time of the program
 
-        try { // Only search for a solution starting from the 1-1 tile
-            search.treeSearch(new Node(null, 1, 1, 1), searchMethod);
+        try { // Only search for a solution starting from the 0-0 tile
+            search.treeSearch(new Node(null, 0, 0, 1), searchMethod);
             if (search.solution != null) { // A solution node is set, therefore a solution is found
                 printSolution(search.solution);
             } else if (search.timeLimitPassed) { //

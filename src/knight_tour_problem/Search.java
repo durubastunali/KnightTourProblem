@@ -94,7 +94,7 @@ public class Search {
 
     // Check whether the new location remains in border
     private boolean checkInBorders(int x, int y) {
-        return (x >= 1) && (x <= n) && (y >= 1) && (y <= n);
+        return (x >= 0) && (x < n) && (y >= 0) && (y < n);
     }
 
     private int getNumberOfPossibleMoves(Node node) {
@@ -119,8 +119,8 @@ public class Search {
     private int getDistanceToCorner(Node node) {
         int x = node.locationX;
         int y = node.locationY;
-        int distanceX = Math.min(x, n - x); // Check the closest distance to edges horizontally
-        int distanceY = Math.min(y, n - y); // Check the closest distance to edges vertically
+        int distanceX = Math.min(x, n - 1 - x); // Check the closest distance to edges horizontally
+        int distanceY = Math.min(y, n - 1 - y); // Check the closest distance to edges vertically
         return distanceX + distanceY; // Return the manhattan distance to the closest corner
     }
 
