@@ -44,7 +44,8 @@ public class Search {
                 return;
             }
 
-            getChildren(node, searchStrategy);
+            // Add the children of the expanded node into frontier
+            getChildren(node, searchStrategy); // Details of how to add is in the method below
             numberOfNodesExpanded++;
         }
     }
@@ -77,7 +78,7 @@ public class Search {
             Collections.reverse(children);
         }
 
-        frontier.addAll(children);
+        frontier.addAll(children); // Add the children of the expanded node after proper structure is formed
     }
 
     // Through the path, check whether any node has the same location with the new location
